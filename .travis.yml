@@ -1,0 +1,31 @@
+dist: xenial
+
+addons:
+  apt:
+    sources:
+    - docker-xenial
+
+services:
+- docker
+
+# Note: To regenerate secrets, set DOCKER_PASS and run:
+# 
+#   travis encrypt "DOCKER_PASS=${DOCKER_PASS}"
+#
+# The password for kariusdocker <eng@kariusdx.com> is in LastPass.
+  
+env:
+  global:
+  - secure: "opJgQ7LXB7rB6vM2W3KQ4wFScnmN+Jm4BQU8rfwBsE2ET+NCAEfYMr4WrAjSi+jvV8LHfCDC0M4tHk7AtPtJ44VIuh/wQalmrfpWHecxW9gTFBFs/cn3aDzqYSQ2rQSAy1YFQKUZAW5ymTz7rsHKERkEsaqf0tsScLbxSowehdU07FDIxy8jwCKWRThjBARgJCJ/U99s5k6kY5+8uDH21y9Ac5kS0hrdcpkbOMeDYylKQF1mjpBYl3qLShijdop8r0NDFxvGCFp1Y4EQHtP18bOffZ0rPXel01Mv/O3BUtTI6xW9aXdIty5qmXH/LZppuaX9y0KLjNPPfqzoQIr4jpz7e4e2t7suIsnUMwC2I/51UxQixIHKIbmboh8FhD69eZw2+4KX8T9OCPpWwloKqcHrn60w4DcbKZpTzig/jKPXr3TkxmiJmPp/t3KK1oDa2tuTlBa5TQb1PJARBkx8M6zKq5UIRDPnYhaJP8zZdb99b465hxT3NYZg94iXp1bqvQwOu0HQ8OmM5wkSPMXBaEr9M6zh+qHMZCqEaV05g+UrsSIa71XznXxUtA3Kd6zcIwNxcMIRueTlIMdO2p39kTFGELr2kqeESBmu923QxJRadEW5RFXG97fXKcKS9K9b9Fx74KZSU8N8qsVhNIMjzlr5K+beEpMyQyTbGDpWZhw="
+
+install:
+- curl -LSfs https://japaric.github.io/trust/install.sh | sudo sh -s -- --git casey/just --target x86_64-unknown-linux-musl --to /usr/local/bin
+
+script:
+- just build
+
+deploy:
+- provider: script
+  script: just publish $TRAVIS_TAG
+  on:
+    tags: true
